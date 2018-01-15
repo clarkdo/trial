@@ -61,15 +61,6 @@ export default class Graph extends Component {
     })
   }
 
-  // Helper to find the index of a given link
-  getLinkIndex (searchLink) {
-    return this.state.graph.links.findIndex(link => {
-      return (
-        link.source === searchLink.source && link.target === searchLink.target
-      )
-    })
-  }
-
   // Given a nodeKey, return the corresponding node
   getViewNode = nodeKey => {
     const searchNode = {}
@@ -92,7 +83,7 @@ export default class Graph extends Component {
       <div id='graph' style={{height: '100%', width: '100%'}}>
         <GraphView
           ref={el => (this.GraphView = el)}
-          nodeSize={80}
+          nodeSize={40}
           nodeKey={NODE_KEY}
           nodes={nodes}
           links={links}

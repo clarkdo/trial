@@ -72,20 +72,11 @@ function makeStyles (
   }
 }
 
-// any objects with x & y properties
-function getTheta (pt1, pt2) {
-  const xComp = pt2.x + pt2.width / 2 - pt1.x - pt1.width / 2
-  const yComp = pt2.y + pt2.height / 2 - pt1.y - pt1.height / 2
-  const theta = Math.atan2(yComp, xComp)
-  return theta
-}
-
 class GraphView extends Component {
   constructor (props) {
     super(props)
 
     // Bind methods
-    this.handleZoom = this.handleZoom.bind(this)
     this.setZoom = this.setZoom.bind(this)
     this.getPathDescription = this.getPathDescription.bind(this)
     this.getNodeTransformation = this.getNodeTransformation.bind(this)
@@ -108,7 +99,9 @@ class GraphView extends Component {
     }
 
     this.zoom = d3.zoom()
-      .on('zoom', this.handleZoom)
+      .on('zoom', () => this.setState({
+        viewTransform: d3.event.transform
+      }))
   }
 
   componentDidMount () {
@@ -123,13 +116,6 @@ class GraphView extends Component {
     d3.select(window)
       .on('keydown', null)
       .on('click', null)
-  }
-
-  // View 'zoom' handler
-  handleZoom () {
-    this.setState({
-      viewTransform: d3.event.transform
-    })
   }
 
   // Programmatically resets zoom
@@ -148,12 +134,20 @@ class GraphView extends Component {
     let trg = this.props.getViewNode(link.target)
 
     if (src && trg) {
-      const from = this.getLinePoint(src, getTheta(src, trg) * 180 / Math.PI)
-      const to = this.getLinePoint(trg, getTheta(trg, src) * 180 / Math.PI)
+      const from = this.getLinePoint(src, this.getTheta(src, trg) * 180 / Math.PI)
+      const to = this.getLinePoint(trg, this.getTheta(trg, src) * 180 / Math.PI)
       return `M${from.x},${from.y}L${to.x},${to.y}`
     }
     console.warn('Unable to get source or target for ', link)
     return ''
+  }
+
+  // any objects with x & y properties
+  getTheta (pt1, pt2) {
+    const xComp = pt2.x + pt2.width / 2 - pt1.x - pt1.width / 2
+    const yComp = pt2.y + pt2.height / 2 - pt1.y - pt1.height / 2
+    const theta = Math.atan2(yComp, xComp)
+    return theta
   }
 
   getLinePoint (link, theta) {
@@ -341,10 +335,7 @@ GraphView.propTypes = {
   background: PropTypes.string,
   style: PropTypes.object,
   nodeSize: PropTypes.number,
-  linkHandleSize: PropTypes.number,
-  linkArrowSize: PropTypes.number,
-  zoomDelay: PropTypes.number, // ms
-  zoomDur: PropTypes.number // ms
+  linkArrowSize: PropTypes.number
 }
 
 GraphView.defaultProps = {
@@ -355,10 +346,7 @@ GraphView.defaultProps = {
   dark: '#000',
   background: '#F9F9F9',
   nodeSize: 40,
-  linkHandleSize: 150,
   linkArrowSize: 6,
-  zoomDelay: 500,
-  zoomDur: 750,
 
   renderLink: (graphView, domNode, datum, index, elements) => {
     d3.select(domNode).append('path')
