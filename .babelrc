@@ -1,5 +1,17 @@
 {
   "presets": [
-    "es2015"
+    "@babel/preset-react",
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "browsers": "> 2%"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }
