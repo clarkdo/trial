@@ -219,18 +219,22 @@ class GraphView extends Component {
     })
 
     // Remove Old
-    links.exit().remove()
+    links.exit()
+      .transition()
+      .duration(self.props.transitionTime)
+      .attr('opacity', 0)
+      .remove()
 
     // Add New
-    const newLinks = links
-      .enter()
+    links.enter()
       .append('g')
       .classed('link', true)
-
-    newLinks
       .attr('opacity', 0)
       .transition()
       .duration(self.props.transitionTime)
+      .each(function (d, i, els) {
+        self.props.renderLink(self, this, d, i, els)
+      })
       .attr('opacity', 1)
 
     // Merge
@@ -254,23 +258,22 @@ class GraphView extends Component {
     })
 
     // Animate/Remove Old
-    nodes
-      .exit()
+    nodes.exit()
       .transition()
       .duration(self.props.transitionTime)
       .attr('opacity', 0)
       .remove()
 
     // Add New
-    const newNodes = nodes
-      .enter()
+    nodes.enter()
       .append('g')
       .classed('node', true)
-
-    newNodes
       .attr('opacity', 0)
       .transition()
       .duration(self.props.transitionTime)
+      .each(function (d, i, els) {
+        self.props.renderNode(self, this, d, i, els)
+      })
       .attr('opacity', 1)
 
     // Merge

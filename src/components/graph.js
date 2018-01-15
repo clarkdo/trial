@@ -3,18 +3,7 @@ import GraphView from './graph-view'
 import GraphConfig from './graph-config.js'
 import defaultInput from '../input'
 
-const styles = {
-  graph: {
-    height: '100%',
-    width: '100%'
-  }
-}
-
 const NODE_KEY = 'id' // Key used to identify nodes
-
-// These keys are arbitrary (but must match the config)
-// However, GraphView renders text differently for circle types
-// so this has to be passed in if that behavior is desired.
 const RECT_TYPE = 'rect'
 const RECT_EDGE_TYPE = 'rectLink'
 
@@ -24,7 +13,7 @@ export default class Graph extends Component {
     this.state = {
       graph: this.normalize(defaultInput)
     }
-    window.visualize = (input) => {
+    window.visualize = input => {
       input = this.normalize(input)
       this.setState({graph: {
         nodes: input.nodes,
@@ -100,7 +89,7 @@ export default class Graph extends Component {
     const LinkTypes = GraphConfig.LinkTypes
 
     return (
-      <div id='graph' style={styles.graph}>
+      <div id='graph' style={{height: '100%', width: '100%'}}>
         <GraphView
           ref={el => (this.GraphView = el)}
           nodeSize={80}
