@@ -5,7 +5,7 @@ import defaultInput from '../input'
 
 const NODE_KEY = 'id' // Key used to identify nodes
 const RECT_TYPE = 'rect'
-const RECT_EDGE_TYPE = 'rectLink'
+const RECT_LINK_TYPE = 'rectLink'
 
 export default class Graph extends Component {
   constructor (props) {
@@ -14,11 +14,7 @@ export default class Graph extends Component {
       graph: this.normalize(defaultInput)
     }
     window.visualize = input => {
-      input = this.normalize(input)
-      this.setState({graph: {
-        nodes: input.nodes,
-        links: input.links
-      }})
+      this.setState({graph: this.normalize(input)})
     }
   }
 
@@ -29,9 +25,9 @@ export default class Graph extends Component {
     }
     if (input) {
       let id = 1
-      const nodes = input.nodes
-      const links = input.links
-      for (const title in (nodes || {})) {
+      const nodes = input.nodes || {}
+      const links = input.links || []
+      for (const title in nodes) {
         const node = nodes[title]
         if (node) {
           node[NODE_KEY] = id++
@@ -40,13 +36,13 @@ export default class Graph extends Component {
           result.nodes.push(node)
         }
       }
-      for (const index in (links || [])) {
+      for (const index in links) {
         const link = links[index]
         if (link) {
           result.links.push({
             source: nodes[link.source] && nodes[link.source][NODE_KEY],
             target: nodes[link.target] && nodes[link.target][NODE_KEY],
-            type: link.type || RECT_EDGE_TYPE
+            type: link.type || RECT_LINK_TYPE
           })
         }
       }
@@ -60,23 +56,17 @@ export default class Graph extends Component {
   /*
    * Render
    */
-
   render () {
-    const nodes = this.state.graph.nodes
-    const links = this.state.graph.links
-    const NodeTypes = GraphConfig.NodeTypes
-    const LinkTypes = GraphConfig.LinkTypes
-
     return (
       <div id='graph' style={{height: '100%', width: '100%'}}>
         <GraphView
           ref={el => (this.GraphView = el)}
           nodeSize={40}
           nodeKey={NODE_KEY}
-          nodes={nodes}
-          links={links}
-          nodeTypes={NodeTypes}
-          linkTypes={LinkTypes}
+          nodes={this.state.graph.nodes}
+          links={this.state.graph.links}
+          nodeTypes={GraphConfig.NodeTypes}
+          linkTypes={GraphConfig.LinkTypes}
           getViewNode={this.getViewNode}
         />
       </div>
