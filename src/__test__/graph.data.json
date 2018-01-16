@@ -1,0 +1,72 @@
+{
+  "nodes": [
+    {
+      "x": 10,
+      "y": 20,
+      "width": 50,
+      "height": 50,
+      "color": "lightcoral",
+      "id": 1,
+      "title": "a",
+      "type": "rect"
+    },
+    {
+      "x": 100,
+      "y": 30,
+      "width": 40,
+      "height": 40,
+      "color": "lightgreen",
+      "id": 2,
+      "title": "b",
+      "type": "rect"
+    },
+    {
+      "x": 30,
+      "y": 100,
+      "width": 50,
+      "height": 50,
+      "color": "lightblue",
+      "id": 3,
+      "title": "c",
+      "type": "rect"
+    },
+    {
+      "x": 150,
+      "y": 150,
+      "width": 100,
+      "height": 40,
+      "color": "orange",
+      "id": 4,
+      "title": "d",
+      "type": "rect"
+    },
+    {
+      "x": 100,
+      "y": 90,
+      "width": 30,
+      "height": 30,
+      "color": "coral",
+      "id": 5,
+      "title": "e",
+      "type": "rect"
+    },
+    {
+      "x": 160,
+      "y": 50,
+      "width": 30,
+      "height": 50,
+      "color": "aqua",
+      "id": 6,
+      "title": "f",
+      "type": "rect"
+    }
+  ],
+  "links": [
+    { "source": 1, "target": 2, "type": "rectLink" },
+    { "source": 1, "target": 3, "type": "rectLink" },
+    { "source": 4, "target": 3, "type": "rectLink" },
+    { "source": 5, "target": 2, "type": "rectLink" },
+    { "source": 3, "target": 5, "type": "rectLink" },
+    { "source": 6, "target": 5, "type": "rectLink" }
+  ]
+}

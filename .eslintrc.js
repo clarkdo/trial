@@ -6,7 +6,9 @@ module.exports = {
   },
   env: {
     browser: true,
-    node: true
+    node: true,
+    "jest/globals": true
   },
-  extends: ['standard', 'standard-jsx']
+  extends: ['standard', 'standard-jsx'],
+  plugins: ['jest']
 }

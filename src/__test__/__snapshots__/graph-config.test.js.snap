@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`graph config link types 1`] = `
+<symbol
+  id="rectLink"
+/>
+`;
+
+exports[`graph config node types 1`] = `
+<symbol
+  id="rect"
+>
+  <rect
+    height="700"
+    id="rect"
+    rx="1"
+    width="700"
+  />
+</symbol>
+`;

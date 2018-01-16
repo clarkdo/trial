@@ -2,7 +2,7 @@ import React from 'react'
 
 const RectShape = (
   <symbol id='rect'>
-    <rect id='rect' width='700' height='700' rx='1' fill='color' />
+    <rect id='rect' width='700' height='700' rx='1' />
   </symbol>
 )
 
