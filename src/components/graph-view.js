@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import Radium from 'radium'
-import { defaults } from 'lodash'
+import { defaults, pick } from 'lodash'
 
 function styleToString (style) {
   return Object.keys(style)
     .map(function (k) {
-      let key = k.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+      const key = k.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
       return `${key}:${style[k]}`
     })
     .join(';')
@@ -78,6 +78,11 @@ class GraphView extends Component {
 
     // Bind methods
     this.setZoom = this.setZoom.bind(this)
+    this.handleNodeDrag = this.handleNodeDrag.bind(this)
+    this.handleNodeMouseUp = this.handleNodeMouseUp.bind(this)
+    this.handleNodeMouseDown = this.handleNodeMouseDown.bind(this)
+    this.handleNodeMouseEnter = this.handleNodeMouseEnter.bind(this)
+    this.handleNodeMouseLeave = this.handleNodeMouseLeave.bind(this)
     this.getPathDescription = this.getPathDescription.bind(this)
     this.getNodeTransformation = this.getNodeTransformation.bind(this)
     this.getNodeStyle = this.getNodeStyle.bind(this)
@@ -118,6 +123,67 @@ class GraphView extends Component {
       .on('click', null)
   }
 
+  handleNodeMouseDown (d) {
+    if (d3.event.defaultPrevented) return // dragged
+    this.setState({
+      selectingNode: true
+    })
+  }
+
+  handleNodeMouseUp (d) {
+    if (this.state.selectingNode) {
+      this.setState({selectingNode: false})
+    }
+  }
+
+  handleNodeMouseEnter (d) {
+    if (this.state.hoveredNode !== d) {
+      this.setState({hoveredNode: d})
+    }
+  }
+
+  handleNodeMouseLeave (d) {
+    // For whatever reason, mouseLeave is fired when edge dragging ends
+    // (and mouseup is not fired). This clears the hoverNode state prematurely
+    // resulting in swapEdge failing to fire.
+    // Detecting & ignoring mouseLeave events that result from drag ending here
+    const fromMouseup = event.which === 1
+    if (this.state.hoveredNode === d && !fromMouseup) {
+      this.setState({hoveredNode: null})
+    }
+  }
+
+  // Node 'drag' handler
+  handleNodeDrag () {
+    this.dragNode()
+  }
+
+  dragNode () {
+    const self = this
+    const el = d3.select(d3.event.target.parentElement) // Enclosing 'g' element
+    el.classed('dragging', true)
+    d3.event.on('drag', dragged).on('end', ended)
+
+    function dragged (d) {
+      if (self.state.readOnly) return
+      d3.select(this).attr('transform', function (d) {
+        d.x += d3.event.dx
+        d.x = d.x > 0 ? d.x : 0
+        d.y += d3.event.dy
+        d.y = d.y > 0 ? d.y : 0
+        return 'translate(' + d.x + ',' + d.y + ')'
+      })
+      self.render()
+    }
+
+    function ended () {
+      el.classed('dragging', false)
+      // For some reason, mouseup isn't firing
+      // - manually firing it here
+      d3.select(this).node().dispatchEvent(new Event('mouseup'))
+    }
+  }
+
   // Programmatically resets zoom
   setZoom (k = 1, x = 0, y = 0, dur = 0) {
     const t = d3.zoomIdentity.translate(x, y).scale(k)
@@ -130,8 +196,8 @@ class GraphView extends Component {
   }
 
   getPathDescription (link) {
-    let src = this.props.getViewNode(link.source)
-    let trg = this.props.getViewNode(link.target)
+    const src = this.props.getViewNode(link.source)
+    const trg = this.props.getViewNode(link.target)
 
     if (src && trg) {
       const from = this.getLinePoint(src, this.getTheta(src, trg) * 180 / Math.PI)
@@ -167,19 +233,24 @@ class GraphView extends Component {
     return 'translate(' + node.x + ',' + node.y + ')'
   }
 
+  getStyle (data, base) {
+    const styles = base ? pick(data, Object.keys(base)) : data
+    return styleToString(defaults(styles, base))
+  }
+
   getNodeStyle (d) {
     if (d.color) {
       d.fill = d.color
     }
-    return styleToString(defaults({ ...d }, this.state.styles.node.base))
+    return this.getStyle(d, this.state.styles.node.base)
   }
 
   getLinkStyle (d) {
-    return styleToString(defaults({ ...d }, this.state.styles.link.base))
+    return this.getStyle(d, this.state.styles.link.base)
   }
 
   getTextStyle (d) {
-    return styleToString(this.state.styles.text.base)
+    return this.getStyle(this.state.styles.text.base)
   }
 
   // Renders 'node.title' into node element
@@ -259,10 +330,17 @@ class GraphView extends Component {
       .remove()
 
     // Add New
-    nodes.enter()
+    const newNodes = nodes.enter()
       .append('g')
       .classed('node', true)
-      .attr('opacity', 0)
+
+    newNodes.on('mousedown', this.handleNodeMouseDown)
+      .on('mouseup', this.handleNodeMouseUp)
+      .on('mouseenter', this.handleNodeMouseEnter)
+      .on('mouseleave', this.handleNodeMouseLeave)
+      .call(d3.drag().on('start', this.handleNodeDrag))
+
+    newNodes.attr('opacity', 0)
       .transition()
       .duration(self.props.transitionTime)
       .each(function (d, i, els) {
@@ -366,18 +444,21 @@ GraphView.defaultProps = {
   },
 
   renderNode: (graphView, domNode, datum, index, elements) => {
-    d3.select(domNode)
-      .append('use')
-      .classed('shape', true)
-      .attr('width', datum.width || graphView.props.nodeSize)
-      .attr('height', datum.height || graphView.props.nodeSize)
-    let style = graphView.getNodeStyle(datum)
-    d3.select(domNode)
-      .attr('style', style)
-      .select('use.shape')
-      .attr('xlink:href', function (d) {
-        return graphView.props.nodeTypes[d.type].shapeId
-      })
+    // For new nodes, add necessary child domNodes
+    if (!domNode.hasChildNodes()) {
+      d3.select(domNode)
+        .append('use')
+        .classed('shape', true)
+        .attr('width', datum.width || graphView.props.nodeSize)
+        .attr('height', datum.height || graphView.props.nodeSize)
+
+      d3.select(domNode)
+        .attr('style', graphView.getNodeStyle(datum))
+        .select('use.shape')
+        .attr('xlink:href', function (d) {
+          return graphView.props.nodeTypes[d.type].shapeId
+        })
+    }
 
     graphView.renderNodeText(datum, domNode)
 
@@ -389,7 +470,7 @@ GraphView.defaultProps = {
     const props = graphView.props
 
     let defIndex = 0
-    let graphConfigDefs = []
+    const graphConfigDefs = []
 
     Object.keys(props.nodeTypes).forEach(function (type) {
       defIndex += 1
