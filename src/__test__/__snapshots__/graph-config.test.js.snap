@@ -11,10 +11,10 @@ exports[`graph config node types 1`] = `
   id="rect"
 >
   <rect
-    height="700"
+    height="100%"
     id="rect"
-    rx="1"
-    width="700"
+    rx="5"
+    width="100%"
   />
 </symbol>
 `;

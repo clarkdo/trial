@@ -26,9 +26,9 @@ describe('graph view', () => {
     expect(view.find('defs symbol')).toHaveLength(2)
     expect(view.find('defs symbol rect#rect').props()).toMatchObject({
       id: 'rect',
-      width: '700',
-      height: '700',
-      rx: '1'
+      width: '100%',
+      height: '100%',
+      rx: '5'
     })
   })
 
