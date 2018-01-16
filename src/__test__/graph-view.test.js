@@ -34,11 +34,6 @@ describe('graph view', () => {
 
   test('view of svg graph', () => {
     expect(view.find('#view')).toHaveLength(1)
-    expect(view.find('#view .background').props()).toMatchObject({
-      width: '100%',
-      height: '100%',
-      fill: 'url(#grid)'
-    })
     expect(view.find('#view #entities')).toHaveLength(1)
     expect(view.find('#view #entities').text()).toBe('abcdef')
 
