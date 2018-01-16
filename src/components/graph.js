@@ -54,20 +54,8 @@ export default class Graph extends Component {
     return result
   }
 
-  // Helper to find the index of a given node
-  getNodeIndex (searchNode) {
-    return this.state.graph.nodes.findIndex(node => {
-      return node[NODE_KEY] === searchNode[NODE_KEY]
-    })
-  }
-
   // Given a nodeKey, return the corresponding node
-  getViewNode = nodeKey => {
-    const searchNode = {}
-    searchNode[NODE_KEY] = nodeKey
-    const i = this.getNodeIndex(searchNode)
-    return this.state.graph.nodes[i]
-  }
+  getViewNode = nodeKey => this.state.graph.nodes.find(node => node[NODE_KEY] === nodeKey)
 
   /*
    * Render
