@@ -79,10 +79,6 @@ class GraphView extends Component {
     // Bind methods
     this.setZoom = this.setZoom.bind(this)
     this.handleNodeDrag = this.handleNodeDrag.bind(this)
-    this.handleNodeMouseUp = this.handleNodeMouseUp.bind(this)
-    this.handleNodeMouseDown = this.handleNodeMouseDown.bind(this)
-    this.handleNodeMouseEnter = this.handleNodeMouseEnter.bind(this)
-    this.handleNodeMouseLeave = this.handleNodeMouseLeave.bind(this)
     this.getPathDescription = this.getPathDescription.bind(this)
     this.getNodeTransformation = this.getNodeTransformation.bind(this)
     this.getNodeStyle = this.getNodeStyle.bind(this)
@@ -121,36 +117,6 @@ class GraphView extends Component {
     d3.select(window)
       .on('keydown', null)
       .on('click', null)
-  }
-
-  handleNodeMouseDown (d) {
-    if (d3.event.defaultPrevented) return // dragged
-    this.setState({
-      selectingNode: true
-    })
-  }
-
-  handleNodeMouseUp (d) {
-    if (this.state.selectingNode) {
-      this.setState({selectingNode: false})
-    }
-  }
-
-  handleNodeMouseEnter (d) {
-    if (this.state.hoveredNode !== d) {
-      this.setState({hoveredNode: d})
-    }
-  }
-
-  handleNodeMouseLeave (d) {
-    // For whatever reason, mouseLeave is fired when edge dragging ends
-    // (and mouseup is not fired). This clears the hoverNode state prematurely
-    // resulting in swapEdge failing to fire.
-    // Detecting & ignoring mouseLeave events that result from drag ending here
-    const fromMouseup = event.which === 1
-    if (this.state.hoveredNode === d && !fromMouseup) {
-      this.setState({hoveredNode: null})
-    }
   }
 
   // Node 'drag' handler
@@ -330,17 +296,11 @@ class GraphView extends Component {
       .remove()
 
     // Add New
-    const newNodes = nodes.enter()
+    nodes.enter()
       .append('g')
       .classed('node', true)
-
-    newNodes.on('mousedown', this.handleNodeMouseDown)
-      .on('mouseup', this.handleNodeMouseUp)
-      .on('mouseenter', this.handleNodeMouseEnter)
-      .on('mouseleave', this.handleNodeMouseLeave)
       .call(d3.drag().on('start', this.handleNodeDrag))
-
-    newNodes.attr('opacity', 0)
+      .attr('opacity', 0)
       .transition()
       .duration(self.props.transitionTime)
       .each(function (d, i, els) {
@@ -385,7 +345,6 @@ class GraphView extends Component {
         <svg id='svgRoot' style={styles.svg.base}>
           {this.props.renderDefs(this)}
           <g id='view' ref={el => (this.view = el)}>
-            {this.props.renderBackground(this)}
             <g id='entities' ref={el => (this.entities = el)} />
           </g>
         </svg>
@@ -489,7 +448,6 @@ GraphView.defaultProps = {
     return (
       <defs>
         {graphConfigDefs}
-
         <marker
           id='end-arrow'
           key='end-arrow'
@@ -520,17 +478,6 @@ GraphView.defaultProps = {
           </feMerge>
         </filter>
       </defs>
-    )
-  },
-
-  renderBackground: graphView => {
-    return (
-      <rect
-        className='background'
-        width='100%'
-        height='100%'
-        fill='url(#grid)'
-      />
     )
   }
 }
