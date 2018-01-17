@@ -6,7 +6,8 @@
       {
         "targets": {
           "browsers": "> 2%"
-        }
+        },
+        "useBuiltIns": "usage"
       }
     ]
   ],

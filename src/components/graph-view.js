@@ -360,22 +360,14 @@ GraphView.defaultProps = {
   renderDefs: graphView => {
     const styles = graphView.state.styles
     const props = graphView.props
+    const nodeTypes = Object.values(props.nodeTypes)
+    const linkTypes = Object.values(props.linkTypes)
 
     let defIndex = 0
     const graphConfigDefs = []
 
-    Object.keys(props.nodeTypes).forEach(function (type) {
-      defIndex += 1
-      graphConfigDefs.push(
-        React.cloneElement(props.nodeTypes[type].shape, { key: defIndex })
-      )
-    })
-
-    Object.keys(props.linkTypes).forEach(function (type) {
-      defIndex += 1
-      graphConfigDefs.push(
-        React.cloneElement(props.linkTypes[type].shape, { key: defIndex })
-      )
+    nodeTypes.concat(linkTypes).forEach(function (type) {
+      graphConfigDefs.push(React.cloneElement(type.shape, { key: ++defIndex }))
     })
 
     return (
