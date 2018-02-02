@@ -37,6 +37,11 @@
   margin-right: 20px;
 }
 
+.card--back .card--small {
+  line-height: 18px;
+  font-size: 13px;
+}
+
 @media (max-width: 600px) {
   .card--back {
     -ms-grid-columns: 1fr 1fr;
@@ -68,5 +73,9 @@
     margin: 0;
     height: 40px;
     line-height: 40px;
+  }
+  .card--back .card--small {
+    font-size: 18px;
+    line-height: 27px;
   }
 }
