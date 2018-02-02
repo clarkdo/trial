@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Load Images</title>
+  <style>
+    .nav, .content {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      outline: none;
+      height: 40px;
+      text-align: center;
+      width: 130px;
+      border-radius: 40px;
+      background: #fff;
+      border: 2px solid #0875e6;
+      color: #0875e6;
+      letter-spacing: 1px;
+      text-shadow: 0;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    button:disabled,
+    button[disabled] {
+      background: #bbbbbb;
+      border-color: #bbbbbb;
+      cursor: wait;
+    }
+    button:hover {
+      color:white;
+      background: #0875e6;
+    }
+    button:active {
+      letter-spacing: 2px ;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="nav">
+    <button onclick="loadImages('cow')">Cow</button>
+    <button onclick="loadImages('dog')">Dog</button>
+    <button onclick="loadImages('giraffe')">Giraffe</button>
+  </div>
+  <div id="content" class="content">
+  </div>
+  <script>
+    var cache = {
+      dog: [],
+      cow: [],
+      giraffe: []
+    }
+    var url =
+      'https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags='
+    var callbackName = 'jsonFlickrFeed'
+
+    /**
+     * Create image element.
+     *
+     * @param {String} src
+     * @param {String} alt
+     * @param {String} title
+     */
+    function createImage(src, alt, title) {
+      var img = document.createElement('img')
+      img.src = src
+      if (alt != null) img.alt = alt
+      if (title != null) img.title = title
+      return img
+    }
+
+    /**
+     * Append multiple images to page in one time for saving rendering overhead.
+     *
+     * @param {Array} collection of image url
+     */
+    function appendImages(images) {
+      var content = document.getElementById('content')
+      content.innerHTML = ''
+
+      var fragment = document.createDocumentFragment()
+      for (var key in images) {
+        fragment.appendChild(createImage(images[key]))
+      }
+      content.appendChild(fragment)
+    }
+
+    /**
+     * Disable or enable all buttons
+     *
+     * @param {Boolean} state of if disabled
+     */
+    function toggleButtons(disabled) {
+      var buttons = document.getElementsByTagName('button')
+      for (var key in buttons) {
+        buttons[key].disabled = disabled
+      }
+    }
+
+    /**
+     * Fetch images from flickr, render 5 images and cache the others for next click.
+     *
+     * @param {String} flickr api tag: cow, dog, giraffe
+     */
+    function loadImages(tag) {
+      var imgs = cache[tag]
+      if (imgs && imgs.length >= 5) {
+        appendImages(imgs.splice(0, 5))
+      } else {
+        toggleButtons(true)
+        jsonp(url + tag, function (error, data) {
+          if (error) {
+            content.innerHTML = error.message
+          } else if (data) {
+            var images = data.items
+            for (var key in images) {
+              var image = images[key]
+              imgs.push(image.media.m)
+            }
+            appendImages(imgs.splice(0, 5))
+          }
+          toggleButtons(false)
+        })
+      }
+    }
+
+    /**
+     * Due to same-origin policy restrictions, use jsonp to load images.
+     *
+     * @param {String} url of flickr images
+     * @param {Function} callback function when data fetched or error occurred
+     */
+    function jsonp(url, callback) {
+      var script = document.createElement('script')
+
+      function cleanup() {
+        if (script.parentNode) script.parentNode.removeChild(script)
+        window[callbackName] = empty
+      }
+
+      function cancel() {
+        if (window[callbackName]) {
+          cleanup()
+        }
+      }
+
+      window[callbackName] = function (data) {
+        cleanup()
+        if (callback) callback(null, data)
+      }
+
+      // create script
+      script.src = url
+      document.head.appendChild(script)
+
+      return cancel
+    }
+
+    function empty() {}
+  </script>
+</body>
+
+</html>
