@@ -108,15 +108,19 @@
   line-height: 30px;
   text-align: center;
   background-color: #e6e7e9;
+  cursor: pointer;
 }
 
-.card__button--solid{
+.card__button:hover {
+  background-color: #d5d6d8;
+}
+
+.card__button--join {
   background-color: #fdbe0f;
 }
 
-.card__button--tc,
-.card__button--back {
-  cursor: pointer;
+.card__button--join:hover {
+  background-color: #ca970b;
 }
 
 .card--bold {
@@ -208,7 +212,7 @@
     height: 40px;
     line-height: 40px;
   }
-  .card__button--solid,
+  .card__button--join,
   .card__button--back {
     width: 100%;
     width: 100%;
