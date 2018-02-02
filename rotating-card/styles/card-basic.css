@@ -140,6 +140,18 @@
   font-size: 14px;
 }
 
+.card--fade-out {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  padding: 30px 0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), to(white));
+  background-image: -webkit-li-gradient(top, transparent, whinearte);
+  background-image: -o-linear-gradient(top, transparent, white);
+  background-image: linear-gradient(to bottom, transparent, white);
+}
+
 @media (max-width: 600px) {
   .card-container {
     width: 100%;
@@ -216,5 +228,8 @@
   .card__button--back {
     width: 100%;
     width: 100%;
+  }
+  .card--fade-out {
+    bottom: 80px;
   }
 }
