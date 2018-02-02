@@ -23,8 +23,7 @@ button {
 }
 button:disabled,
 button[disabled] {
-  background: #bbbbbb;
-  border-color: #bbbbbb;
+  color: #bbbbbb;
   cursor: wait;
 }
 button:hover {
