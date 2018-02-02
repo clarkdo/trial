@@ -1,0 +1,36 @@
+.nav,
+.content {
+  margin-top: 20px;
+  text-align: center;
+}
+button {
+  outline: none;
+  height: 40px;
+  text-align: center;
+  width: 130px;
+  border-radius: 40px;
+  background: #fff;
+  border: 2px solid #0875e6;
+  color: #0875e6;
+  letter-spacing: 1px;
+  text-shadow: 0;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-transition: all 0.25s ease;
+  -o-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+}
+button:disabled,
+button[disabled] {
+  background: #bbbbbb;
+  border-color: #bbbbbb;
+  cursor: wait;
+}
+button:hover {
+  color: white;
+  background: #0875e6;
+}
+button:active {
+  letter-spacing: 2px;
+}
