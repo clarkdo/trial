@@ -3,9 +3,15 @@ date_default_timezone_set('Europe/Dublin');
 
 if (php_sapi_name() == "cli") {
     try {
-        $draw = Calculator::calculate($argv[1]);
+        $includePast = $argv[2];
+        if (!$includePast || $includePast == "false") {
+            $includePast = false;
+        } else {
+            $includePast = true;
+        }
+        $draw = Calculator::calculate($argv[1], $includePast);
         if ($draw instanceof DateTime) {
-            echo "Next valid draw date is: {$draw->format('d/m/Y')}\n";
+            echo "Next valid draw date is: {$draw->format('l,d F Y')}\n";
         }
     } catch (Exception $e) {
         echo "{$e->getMessage()}\n";
@@ -14,7 +20,7 @@ if (php_sapi_name() == "cli") {
 
 class Calculator
 {
-    public static function calculate($date = 'NOW'): DateTime
+    public static function calculate($date = 'NOW', $includePast = false): DateTime
     {
         if (!($date instanceof DateTime)) {
             try {
@@ -24,9 +30,9 @@ class Calculator
             }
         }
 
-        // if input time is earlier than current time, calculate from now
+        // If $includePast is true and input time is earlier than current time, calculate from now
         $now = new DateTime('NOW');
-        if ($date < $now) {
+        if ($includePast == false && $date < $now) {
             $date = $now;
         }
 

@@ -1,8 +1,6 @@
 function flip() {
-  var front = document.getElementById("front");
-  var back = document.getElementById("back");
-  toggleFlip(front);
-  toggleFlip(back);
+  toggleFlip(document.getElementById("front"));
+  toggleFlip(document.getElementById("back"));
 }
 
 function toggleFlip(element) {
