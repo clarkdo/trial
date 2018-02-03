@@ -3,6 +3,34 @@
   margin-top: 20px;
   text-align: center;
 }
+.content {
+  padding: 0.5vw;
+  font-size: 0;
+  -ms-flex-wrap: wrap;
+  -ms-flex-direction: column;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  display: flex;
+  display: -ms-flexbox;
+  display: -webkit-box;
+}
+.content img {
+  -webkit-box-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+  width: 200px;
+  margin: 0.5vw;
+}
+@media screen and (max-width: 400px) {
+  .content img {
+    margin: 0;
+  }
+  .content {
+    padding: 0;
+  }
+}
 button {
   outline: none;
   height: 40px;
