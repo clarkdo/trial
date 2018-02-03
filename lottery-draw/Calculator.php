@@ -21,7 +21,7 @@ if (php_sapi_name() == "cli") {
 class Calculator
 {
     /**
-     * Calculate next valid draw date: nearest Wednesday or Friday
+     * Calculate next valid draw date: nearest Wednesday or Saturday
      *
      * @param DateTime $date The date which calculation is based on
      * @param Boolean $includePast If return value includes the past date
@@ -50,7 +50,7 @@ class Calculator
 
         $draw = (clone $date)->modify('wednesday 20:00 this week');
         if ($date > $draw) {
-            $draw->modify('friday 20:00 this week');
+            $draw->modify('saturday 20:00 this week');
             if ($date > $draw) {
                 $draw = $date->modify('wednesday 20:00 next week');
             }

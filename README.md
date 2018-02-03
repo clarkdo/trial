@@ -38,5 +38,5 @@ Calculation logic:
     1. If true and input date time is earlier than current time, calculate based on now.
     2. Otherwise calculate based on first parameter date.
 2. If input time is earlier than Wednesday 20:00 of current week, it's the draw date.
-3. Otherwise if it is earlier than Friday 20:00 of current week, it's the draw date.
+3. Otherwise if it is earlier than Saturday 20:00 of current week, it's the draw date.
 4. Otherwise the draw date is Wednesday 20:00 of next week.
