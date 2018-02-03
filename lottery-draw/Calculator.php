@@ -40,10 +40,12 @@ class Calculator
             }
         }
 
-        // If $includePast is true and input time is earlier than current time, calculate from now
-        $now = new DateTime('NOW');
-        if ($includePast == false && $date < $now) {
-            $date = $now;
+        // If $includePast is false and input time is earlier than current time, calculate from now
+        if ($includePast == false) {
+            $now = new DateTime('NOW');
+            if ($date < $now) {
+                $date = $now;
+            }
         }
 
         $draw = (clone $date)->modify('wednesday 20:00 this week');
