@@ -20,6 +20,16 @@ if (php_sapi_name() == "cli") {
 
 class Calculator
 {
+    /**
+     * Calculate next valid draw date: nearest Wednesday or Friday
+     *
+     * @param DateTime $date The date which calculation is based on
+     * @param Boolean $includePast If return value includes the past date
+     *
+     * @throws Exception If parameter date is not a valid format
+     * @author Clark Du <clark.duxin@gmail.com>
+     * @return Datetime next valid draw date
+     */
     public static function calculate($date = 'NOW', $includePast = false): DateTime
     {
         if (!($date instanceof DateTime)) {
