@@ -6,15 +6,13 @@
 .content {
   padding: 0.5vw;
   font-size: 0;
+  display: -ms-flexbox;
   -ms-flex-wrap: wrap;
   -ms-flex-direction: column;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-flow: row wrap;
+  -webkit-flex-flow: row wrap;
   flex-flow: row wrap;
-  display: flex;
-  display: -ms-flexbox;
   display: -webkit-box;
+  display: flex;
 }
 .content img {
   -webkit-box-flex: auto;
@@ -31,6 +29,7 @@
     padding: 0;
   }
 }
+
 button {
   outline: none;
   height: 40px;
