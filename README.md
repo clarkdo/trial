@@ -36,7 +36,7 @@ Calculation logic:
 
 1. Judge second parameter $includePast
     1. If true and input date time is earlier than current time, calculate based on now.
-    2. Or calculate based on first parameter date.
+    2. Otherwise calculate based on first parameter date.
 2. If input time is earlier than Wednesday 20:00 of current week, it's the draw date.
-3. Or if it is earlier than Friday 20:00 of current week, it's the draw date.
-4. Or the draw date is Wednesday 20:00 of next week.
+3. Otherwise if it is earlier than Friday 20:00 of current week, it's the draw date.
+4. Otherwise the draw date is Wednesday 20:00 of next week.
