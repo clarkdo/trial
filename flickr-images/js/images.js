@@ -1,10 +1,10 @@
 var cache = {
-    dog: [],
-    cow: [],
-    giraffe: []
-  };
+  dog: [],
+  cow: [],
+  giraffe: []
+};
 var url =
-"https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=";
+  "https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=";
 
 /**
  * Create image element.
@@ -22,17 +22,41 @@ function createImage(src, alt, title) {
 }
 
 /**
+ * Find an image node inside a parent node.
+ *
+ * @param {Element} parent node
+ * @return {Element} last image node
+ */
+function getLastImage(dom) {
+  var node,
+    nodes = dom.childNodes,
+    i = nodes.length - 1;
+  while ((node = nodes[i--])) {
+    if (node.tagName.toLowerCase() === "img") {
+      return node;
+    }
+  }
+  return null;
+}
+
+/**
  * Append multiple images to page in one time for saving rendering overhead.
  *
  * @param {Array} collection of image url
  */
-function appendImages(images) {
+function appendImages(images, callback) {
   var content = document.getElementById("content");
   content.innerHTML = "";
 
   var fragment = document.createDocumentFragment();
   for (var key in images) {
     fragment.appendChild(createImage(images[key]));
+  }
+
+  if (callback) {
+    getLastImage(fragment).onload = function() {
+      callback();
+    };
   }
   content.appendChild(fragment);
 }
@@ -42,10 +66,11 @@ function appendImages(images) {
  *
  * @param {Boolean} state of if disabled
  */
-function toggleButtons(disabled) {
+function toggleButtons() {
   var buttons = document.getElementsByTagName("button");
   for (var key in buttons) {
-    buttons[key].disabled = disabled;
+    var button = buttons[key];
+    button.disabled = !button.disabled;
   }
 }
 
@@ -55,23 +80,23 @@ function toggleButtons(disabled) {
  * @param {String} flickr api tag: cow, dog, giraffe
  */
 function loadImages(tag) {
+  toggleButtons();
   var imgs = cache[tag];
   if (imgs && imgs.length >= 5) {
-    appendImages(imgs.splice(0, 5));
+    appendImages(imgs.splice(0, 5), toggleButtons);
   } else {
-    toggleButtons(true);
     jsonp(url + tag, function(error, data) {
       if (error) {
         content.innerHTML = error.message;
+        toggleButtons();
       } else if (data) {
         var images = data.items;
         for (var key in images) {
           var image = images[key];
           imgs.push(image.media.m);
         }
-        appendImages(imgs.splice(0, 5));
+        appendImages(imgs.splice(0, 5), toggleButtons);
       }
-      toggleButtons(false);
     });
   }
 }
