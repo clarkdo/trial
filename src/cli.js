@@ -9,6 +9,11 @@ if (!semver.satisfies(usingVersion, version)) {
 }
 
 (async function () {
-  const invitation = await new Invitation().readList()
-  invitation.chooseWithinKM(100).sortById().printInvited()
+  try {
+    const invitation = await new Invitation().readList()
+    invitation.chooseWithinKM(100).sortById().printInvited()
+  } catch (e) {
+    console.error(e.message)
+    process.exit(0)
+  }
 })()

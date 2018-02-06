@@ -18,11 +18,43 @@ describe('reader', () => {
     }
   })
 
-  test('read an invalid json format file', async () => {
+  test('read an illegal json format file', async () => {
     try {
-      await reader.read(resolve(__dirname, 'data', 'error-format.txt'))
+      await reader.read(resolve(__dirname, 'data', 'illegal-json.txt'))
     } catch (e) {
-      expect(e.message).toMatch('error-format.txt contains invalid json.')
+      expect(e.message).toMatch('Data file contains invalid json:')
+    }
+  })
+
+  test('read a lack id field file', async () => {
+    try {
+      await reader.read(resolve(__dirname, 'data', 'lack-id.txt'))
+    } catch (e) {
+      expect(e.message).toMatch('user_id is required in customer')
+    }
+  })
+
+  test('read a lack name field file', async () => {
+    try {
+      await reader.read(resolve(__dirname, 'data', 'lack-name.txt'))
+    } catch (e) {
+      expect(e.message).toMatch('name of user:1 is required')
+    }
+  })
+
+  test('read a wrong latitude type field file', async () => {
+    try {
+      await reader.read(resolve(__dirname, 'data', 'wrong-type-lat.txt'))
+    } catch (e) {
+      expect(e.message).toMatch('latitude of user:2 should be a required number')
+    }
+  })
+
+  test('read a wrong longitude type field file', async () => {
+    try {
+      await reader.read(resolve(__dirname, 'data', 'wrong-type-lon.txt'))
+    } catch (e) {
+      expect(e.message).toMatch('longitude of user:2 should be a required number')
     }
   })
 
