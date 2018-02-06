@@ -2,7 +2,7 @@
   "name": "customers-invitation",
   "version": "1.0.0",
   "description": "Calculate matching customers (within 100km)",
-  "main": "src/index.js",
+  "main": "src/invitation.js",
   "author": "Clark Du <clark.duxin@gmail.com>",
   "license": "MIT",
   "scripts": {

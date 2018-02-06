@@ -4,6 +4,10 @@ const EARTH_RADIUS = new Decimal(6371.0088) // earth mean radius
 
 module.exports = class Office {
   constructor (lat, lon) {
+    if ((lat && !isNumeric(lat)) ||
+        (lon && !isNumeric(lon))) {
+      throw new Error('Latitude/Longitude should be numeric.')
+    }
     this.latitude = new Decimal(lat || 53.339405)
     this.longitude = new Decimal(lon || -6.257664)
     this.latRad = this.toRadian(this.latitude)
