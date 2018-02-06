@@ -25,8 +25,13 @@ $ yarn
 
 ## Usage
 
+### CLI
 ```bash
-$ node src/cli.js
+$ npm run invite
+
+# or
+
+$ yarn invite
 ```
 
 Then output will be like:

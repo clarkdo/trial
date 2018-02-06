@@ -9,6 +9,14 @@ describe('office', () => {
     expect(longitude.equals(-6.257664)).toBeTruthy()
   })
 
+  test('create office with custom invalid degrees', () => {
+    try {
+      new Office(12.345, 'a') // eslint-disable-line
+    } catch (e) {
+      expect(e.message).toEqual('Latitude/Longitude should be numeric.')
+    }
+  })
+
   test('create office with custom degrees', () => {
     const { latitude, longitude } = new Office(12.345, -67.89)
     expect(latitude.equals(12.345)).toBeTruthy()

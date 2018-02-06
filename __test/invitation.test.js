@@ -26,8 +26,8 @@ describe('invitation', () => {
     invitation.office.distanceWithin.mockImplementation((c, km) => c.user_id < km)
   })
 
-  test('fetch customer list', async () => {
-    const { reader, customers } = await invitation.fetch()
+  test('readList customer list', async () => {
+    const { reader, customers } = await invitation.readList()
     expect(reader.read).toHaveBeenCalledTimes(1)
     expect(customers).toHaveLength(4)
   })
@@ -42,7 +42,7 @@ describe('invitation', () => {
   })
 
   test('get customers with a distance', () => {
-    const { customers } = invitation.withinKM(5)
+    const { customers } = invitation.chooseWithinKM(5)
     expect(customers).toHaveLength(2)
     expect(customers[0]).toHaveProperty('user_id', 1)
     expect(customers[1]).toHaveProperty('user_id', 3)
@@ -50,7 +50,7 @@ describe('invitation', () => {
 
   test('get customers with invalid distance', () => {
     expect(() => {
-      invitation.withinKM(null)
+      invitation.chooseWithinKM(null)
     }).toThrow('"km" should be numeric.')
   })
 
@@ -62,14 +62,5 @@ describe('invitation', () => {
     expect(console.log).toHaveBeenCalledTimes(2)
 
     console.log = log
-  })
-
-  test('invite customers within 100km', async () => {
-    const { customers } = await invitation.invite100KM()
-    expect(customers).toHaveLength(4)
-    expect(customers[0]).toHaveProperty('user_id', 1)
-    expect(customers[1]).toHaveProperty('user_id', 3)
-    expect(customers[2]).toHaveProperty('user_id', 12)
-    expect(customers[3]).toHaveProperty('user_id', 28)
   })
 })

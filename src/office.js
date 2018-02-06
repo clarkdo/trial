@@ -13,12 +13,27 @@ module.exports = class Office {
     this.latRad = this.toRadian(this.latitude)
     this.lonRad = this.toRadian(this.longitude)
   }
+
+  /**
+   * Calculate if customer is within a given distance(km)
+   *
+   * @param {Object} customer
+   * @param {Number} max distance between office and customer
+   * @returns {Boolean} If the distance is within the given
+   */
   distanceWithin (customer, maxKM) {
     if (!isNumeric(maxKM)) {
       throw new Error('Max distance should be numeric.')
     }
     return this.distance(customer).lessThan(maxKM)
   }
+
+  /**
+   * Calculate distance from customer to office, use Great-circle distance
+   *
+   * @param {Object} customer
+   * @returns {Object} A decimal object corresponding to distance
+   */
   distance (customer) {
     if (!customer) {
       throw new Error('Customer in distance is required.')
@@ -41,6 +56,13 @@ module.exports = class Office {
           .mul(Decimal.cos(srcLon.sub(destLon)))
       )).mul(EARTH_RADIUS)
   }
+
+  /**
+   * Convert a degree to radian
+   *
+   * @param {Number} degree
+   * @returns {Number} radian
+   */
   toRadian (degree) {
     return degree.mul(Math.PI).div(180)
   }

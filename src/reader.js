@@ -3,10 +3,13 @@ const { createInterface } = require('readline')
 const Stream = require('stream')
 
 module.exports = class Reader {
-  constructor () {
-    this.data = []
-  }
-  read (filePath) {
+  /**
+   * Read the json data from give path line-by-line
+   *
+   * @param {String} data file path
+   * @returns {Array} data in file
+   */
+  static read (filePath) {
     if (!filePath || !existsSync(filePath)) {
       throw new Error(`Path:${filePath} is not a valid and existed path`)
     }
@@ -16,19 +19,20 @@ module.exports = class Reader {
       })
       const outStream = new Stream()
       const reader = createInterface(inStream, outStream)
+      const data = []
 
       reader.on('line', line => {
         try {
-          line && this.data.push(this.parse(line))
+          line && data.push(this.parse(line))
         } catch (e) {
           reject(new Error(`Data file:${filePath} contains invalid json.`))
         }
       }).on('close', line => {
-        resolve(this.data)
+        resolve(data)
       })
     })
   }
-  parse (json) {
+  static parse (json) {
     return JSON.parse(json)
   }
 }

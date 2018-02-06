@@ -8,7 +8,7 @@ if (!semver.satisfies(usingVersion, version)) {
   process.exit(0)
 }
 
-(async function calculate () {
-  const invitation = new Invitation();
-  (await invitation.invite100KM()).printInvited()
+(async function () {
+  const invitation = await new Invitation().readList()
+  invitation.chooseWithinKM(100).sortById().printInvited()
 })()

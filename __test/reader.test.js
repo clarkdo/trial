@@ -1,12 +1,7 @@
-const Reader = require('reader')
+const reader = require('reader')
 const { resolve } = require('path')
 
 describe('reader', () => {
-  const reader = new Reader()
-  beforeEach(() => {
-    reader.data = []
-  })
-
   test('read a non-existent file', async () => {
     try {
       await reader.read('non-existent.txt')

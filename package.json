@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "standard",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "invite": "node src/cli.js"
   },
   "dependencies": {
     "decimal.js": "^9.0.1",
