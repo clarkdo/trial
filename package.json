@@ -1,8 +1,29 @@
 {
-  "name": "intercom-test",
+  "name": "customers-invitation",
   "version": "1.0.0",
   "description": "Calculate matching customers (within 100km)",
   "main": "src/index.js",
   "author": "Clark Du <clark.duxin@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "lint": "standard",
+    "test": "jest"
+  },
+  "dependencies": {
+    "decimal.js": "^9.0.1",
+    "semver": "^5.5.0"
+  },
+  "devDependencies": {
+    "jest": "^22.1.4",
+    "standard": "^10.0.3"
+  },
+  "standard": {
+    "env": ["jest"]
+  },
+  "jest": {
+    "modulePaths": ["<rootDir>src/"]
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  }
 }
