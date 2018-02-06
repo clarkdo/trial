@@ -3,19 +3,25 @@ const { isNumeric } = require('./util')
 const EARTH_RADIUS = new Decimal(6371.0088) // earth mean radius
 
 module.exports = class Office {
-  constructor () {
-    this.latitude = new Decimal(53.339405)
-    this.longitude = new Decimal(-6.257664)
+  constructor (lat, lon) {
+    this.latitude = new Decimal(lat || 53.339405)
+    this.longitude = new Decimal(lon || -6.257664)
     this.latRad = this.toRadian(this.latitude)
     this.lonRad = this.toRadian(this.longitude)
   }
+  distanceWithin (customer, maxKM) {
+    if (!isNumeric(maxKM)) {
+      throw new Error('Max distance should be numeric.')
+    }
+    return this.distance(customer).lessThan(maxKM)
+  }
   distance (customer) {
     if (!customer) {
-      throw new Error('customer for calculating distance cannot be null.')
+      throw new Error('Customer in distance is required.')
     }
     const {latitude: lat, longitude: lon} = customer
     if (!isNumeric(lat) || !isNumeric(lon)) {
-      throw new Error('degrees of customer should be numeric.')
+      throw new Error('Degrees of customer should be numeric.')
     }
 
     const srcLat = this.toRadian(new Decimal(lat))

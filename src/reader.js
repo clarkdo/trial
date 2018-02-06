@@ -1,5 +1,5 @@
-const fs = require('fs')
-const readline = require('readline')
+const { createReadStream, existsSync } = require('fs')
+const { createInterface } = require('readline')
 const Stream = require('stream')
 
 module.exports = class Reader {
@@ -7,18 +7,21 @@ module.exports = class Reader {
     this.data = []
   }
   read (filePath) {
+    if (!filePath || !existsSync(filePath)) {
+      throw new Error(`Path:${filePath} is not a valid and existed path`)
+    }
     return new Promise((resolve, reject) => {
-      const inStream = fs.createReadStream(filePath, {
+      const inStream = createReadStream(filePath, {
         encoding: 'utf-8'
       })
       const outStream = new Stream()
-      const reader = readline.createInterface(inStream, outStream)
+      const reader = createInterface(inStream, outStream)
 
       reader.on('line', line => {
         try {
-          this.data.push(this.parse(line))
+          line && this.data.push(this.parse(line))
         } catch (e) {
-          reject(e)
+          reject(new Error(`Data file:${filePath} contains invalid json.`))
         }
       }).on('close', line => {
         resolve(this.data)

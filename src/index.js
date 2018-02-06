@@ -10,5 +10,5 @@ if (!semver.satisfies(usingVersion, version)) {
 (async function calculate () {
   const Invitation = require('./invitation')
   const invitation = new Invitation();
-  (await invitation.invite100KM()).print()
+  (await invitation.invite100KM()).printInvited()
 })()

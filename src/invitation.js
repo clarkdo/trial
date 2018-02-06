@@ -24,10 +24,10 @@ module.exports = class Invitation {
     if (!isNumeric(km)) {
       throw new Error('"km" should be numeric.')
     }
-    this.customers = this.customers.filter(customer => this.office.distance(customer).lessThan(km))
+    this.customers = this.customers.filter(customer => this.office.distanceWithin(customer, km))
     return this
   }
-  print () {
+  printInvited () {
     this.customers.forEach(customer => {
       console.log(`Name: ${customer.name}, Id: ${customer.user_id}`)
     })
