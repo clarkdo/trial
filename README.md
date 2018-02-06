@@ -16,11 +16,11 @@ $ yarn
 
 ## File Structure
 
-1. data/customers.txt: store customers data file
+1. src/invitation.js: Main class, for operating customer list
 1. src/cli.js: a executable file to run this test
-1. src/invitation.js: Class for operating customer list
 1. src/reader.js: Class for reading customer list from data file
 1. src/office.js: Class for office operations, such as: store office degrees, distance between customer and office
+1. data/customers.txt: store customers data file
 1. __test: test cases
 
 ## Usage
